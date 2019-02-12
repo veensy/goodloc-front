@@ -16,8 +16,8 @@ class Header extends Component {
     } else {
       return (
         <div>
-          <Link to="/signup">Sign Up</Link>
-          <Link to="/signin">Sign In</Link>
+          <Link to="/signup"></Link>
+          <Link to="/signin"></Link>
         </div>
       );
     }
@@ -25,7 +25,7 @@ class Header extends Component {
   render() {
     return (
       <div className="header">
-        <Link to="/">Redux Auth</Link>
+        <Link to="/"></Link>
         {this.renderLinks()}
       </div>
     );
