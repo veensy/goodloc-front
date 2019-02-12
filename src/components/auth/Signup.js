@@ -21,40 +21,60 @@ const customStyles = {
 class Signup extends Component {
   constructor() {
     super();
-    this.state = { modalIsOpen: false };
+    this.state = { modalIsOpen: false, value: {} };
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+  }
+  componentWillMount() {
+    Modal.setAppElement("body");
   }
   openModal() {
     this.setState({ modalIsOpen: true });
   }
-  afterOpenModal() {
-    // this.subtitle.style.color = "#f00";
-  }
+
   closeModal() {
     this.setState({ modalIsOpen: false });
   }
 
   onSubmitSignUp = formProps => {
-    console.log(formProps);
+    console.log("signup");
+
     this.props.signup(formProps, () => {
       this.props.history.push("/feature");
     });
   };
 
+  renderErrorMessage = () => {
+    return (
+      <div>
+        {this.props.validate ? (
+          this.props.validate
+        ) : (
+          <ul>
+            {this.props.errorMessage.map(message => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
+
   render() {
     const { handleSubmit } = this.props;
-    const inputUiKitEmail = (icon, placeholder) => ({ input }) => {
+    const inputUiKitEmail = (icon, placeholder, type) => ({ input }) => {
       return (
         <div className="uk-margin">
           <div className="uk-inline">
             <span className="uk-form-icon color-icon" uk-icon={icon} />
             <input
               className="uk-input color-input"
-              type="text"
+              type={type}
               {...input}
               placeholder={placeholder}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="off"
             />
           </div>
         </div>
@@ -70,31 +90,39 @@ class Signup extends Component {
 
           <div className="uk-card-body">
             <Field
-              name="username"
-              type="text"
-              component={inputUiKitEmail("icon: user", "Username")}
-              autoComplete="off"
+              name="firstName"
+              component={inputUiKitEmail("icon: user", "Firstname", "text")}
               autoCorrect="off"
               spellCheck="off"
+              autoComplete="off"
+            />
+            <Field
+              name="lastName"
+              component={inputUiKitEmail("icon: user", "Lastname", "text")}
+              autoCorrect="off"
+              spellCheck="off"
+              autoComplete="off"
             />
             <Field
               name="email"
-              type="text"
-              component={inputUiKitEmail("icon: mail", "Email")}
-              autoComplete="off"
+              component={inputUiKitEmail("icon: mail", "Email", "email")}
               autoCorrect="off"
               spellCheck="off"
+              autoComplete="Email"
             />
             <Field
               name="password"
-              type="password"
-              component={inputUiKitEmail("icon: lock", "Password")}
+              component={inputUiKitEmail("icon: lock", "Password", "password")}
               autoComplete="off"
+              
             />
             <Field
               name="confirm_password"
-              type="password"
-              component={inputUiKitEmail("icon: lock", "Confirm Password")}
+              component={inputUiKitEmail(
+                "icon: lock",
+                "Confirm Password",
+                "password"
+              )}
               autoComplete="off"
             />
 
@@ -108,23 +136,15 @@ class Signup extends Component {
                 </button>
                 <Modal
                   isOpen={this.state.modalIsOpen}
-                  onAfterOpen={this.afterOpenModal}
                   onRequestClose={this.closeModal}
                   style={customStyles}
                   contentLabel=""
                 >
-                  
-                      <button
-                        class="close-button"
-                     
-                        onClick={this.closeModal}
-                       
-                      ><b>X</b></button>
-               
+                  <button className="close-button" onClick={this.closeModal}>
+                    <b>X</b>
+                  </button>
 
-                  {this.props.validate
-                    ? "Well done! " + this.props.validate
-                    : "Ooooops! " + this.props.errorMessage}
+                  {this.renderErrorMessage()}
                 </Modal>
               </div>
             </div>

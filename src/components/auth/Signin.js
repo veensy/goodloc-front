@@ -21,37 +21,44 @@ class Signin extends Component {
     super();
     this.state = { modalIsOpen: false };
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+  }
+  componentWillMount() {
+    Modal.setAppElement("body");
   }
   openModal() {
     this.setState({ modalIsOpen: true });
   }
-  afterOpenModal() {
-    // this.subtitle.style.color = "#f00";
-  }
+
   closeModal() {
     this.setState({ modalIsOpen: false });
   }
   onSubmitSignIn = formProps => {
-    console.log(formProps);
     this.props.signin(formProps, () => {
       this.props.history.push("/feature");
     });
   };
+  renderErrorMessage = () => {
+    return (
+      <div>
+        {this.props.validate ? this.props.validate : this.props.errorMessage}
+      </div>
+    );
+  };
 
   render() {
     const { handleSubmit } = this.props;
-    const inputUiKitEmail = (icon, placeholder) => ({ input }) => {
+    const inputUiKitEmail = (icon, placeholder, type) => ({ input }) => {
       return (
         <div className="uk-margin">
           <div className="uk-inline">
             <span className="uk-form-icon color-icon" uk-icon={icon} />
             <input
               className="uk-input color-input"
-              type="text"
+              type={type}
               {...input}
               placeholder={placeholder}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -66,66 +73,49 @@ class Signin extends Component {
 
           <div className="uk-card-body">
             <Field
-              name="username"
-              type="text"
-              component={inputUiKitEmail("icon: user", "Username")}
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="off"
-            />
-            <Field
               name="email"
-              type="text"
-              component={inputUiKitEmail("icon: mail", "Email")}
-              autoComplete="off"
+              component={inputUiKitEmail("icon: mail", "Email", "email")}
               autoCorrect="off"
               spellCheck="off"
+              autoComplete="off"
             />
             <Field
               name="password"
-              type="password"
-              component={inputUiKitEmail("icon: lock", "Password")}
+              component={inputUiKitEmail("icon: lock", "Password", "password")}
               autoComplete="off"
             />
             <div className="uk-margin">
               <div className="uk-inline">
-                <button onClick={this.openModal} className="uk-button uk-button-default color-button">
+                <button
+                  onClick={this.openModal}
+                  className="uk-button uk-button-default color-button"
+                >
                   Log In
                 </button>
                 <Modal
                   isOpen={this.state.modalIsOpen}
-                  onAfterOpen={this.afterOpenModal}
                   onRequestClose={this.closeModal}
                   style={customStyles}
                   contentLabel=""
                 >
+                  <button className="close-button" onClick={this.closeModal}>
+                    <b>X</b>
+                  </button>
 
-                  <button
-                    class="close-button"
-
-                    onClick={this.closeModal}
-
-                  ><b>X</b></button>
-
-
-                  {this.props.validate
-                    ? "Well done! " + this.props.validate
-                    : "Ooooops! " + this.props.errorMessage}
+                  {this.renderErrorMessage()}
                 </Modal>
-
               </div>
             </div>
           </div>
 
-          <div>
-
-          </div>
+          <div />
         </form>
       </div>
     );
   }
 }
 const mapStateToProps = state => {
+  console.log(state);
   return {
     errorMessage: state.auth.errorMessageSignIn,
     validate: state.auth.validatedSignIn

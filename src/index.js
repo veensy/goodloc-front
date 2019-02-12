@@ -13,10 +13,14 @@ import Feature from "./components/Feature";
 import Signout from "./components/auth/Signout";
 import Signin from "./components/auth/Signin";
 
+import {INITIAL_STATE} from './reducers/auth'
+
+
 const store = createStore(
+
   reducers,
   {
-    auth: { authenticated: localStorage.getItem("token") }
+    auth: { ...INITIAL_STATE, authenticated: localStorage.getItem("token") },
   },
   applyMiddleware(reduxThunk)
 );
@@ -35,3 +39,4 @@ ReactDOM.render(
   </Provider>,
   document.querySelector("#root")
 );
+

@@ -4,10 +4,10 @@ import {
   AUTH_ERROR_SIGNUP
 } from "../actions/types";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   authenticated: "",
-  errorMessageSignIn: "",
-  errorMessageSignUp: "",
+  errorMessageSignIn: [],
+  errorMessageSignUp: [],
   validatedSignIn: "",
   validatedSignUp: ""
 };
