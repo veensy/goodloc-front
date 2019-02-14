@@ -36,14 +36,7 @@ class ForgotPassword extends Component {
     this.setState({ modalIsOpen: false });
   }
   onSubmitForgotPassword = formProps => {
-  
-  
-    this.props.forgotPassword(formProps,()=>{
-      this.props.history.push("/");
-    });
-    // this.props.forgotPassword(formProps, () => {
-    //   this.props.history.push("/");
-    // });
+    this.props.forgotPassword(formProps, () => {});
   };
   renderErrorMessage = () => {
     return (
@@ -52,7 +45,13 @@ class ForgotPassword extends Component {
       </div>
     );
   };
+  resetPage = () => {
+    if (this.props.validate && this.state.modalIsOpen === false) {
+      this.props.history.push("/reset");
+    }
+  };
   render() {
+    this.resetPage();
     const { handleSubmit } = this.props;
     const inputUiKitEmail = (icon, placeholder, type) => ({ input }) => {
       return (

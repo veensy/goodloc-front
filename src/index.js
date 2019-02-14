@@ -15,7 +15,7 @@ import Signin from "./components/auth/Signin";
 import ForgotPassword from "./components/auth/ForgotPassword";
 
 import { INITIAL_STATE } from "./reducers/auth";
-
+import ResetPassword from "./components/auth/ResetPassword";
 
 const store = createStore(
   reducers,
@@ -35,6 +35,7 @@ ReactDOM.render(
         <Route path="/signout" component={Signout} />
         <Route path="/signin" component={Signin} />
         <Route path="/forgotPassword" component={ForgotPassword} />
+        <Route path="/reset" component={ResetPassword} />
       </App>
     </BrowserRouter>
   </Provider>,

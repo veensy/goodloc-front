@@ -11,20 +11,30 @@ const l = "http://localhost:3090/";
 export const forgotPassword = (formProps, callback) => async dispatch => {
   try {
     console.log(formProps);
-    
+
     const response = await axios.post(`${l}forgotpassword`, formProps);
     console.log(response);
-    
-    if (response.data.error === "Email not in db") {
+
+    if (response.data === "Email not in db") {
       dispatch({
         type: AUTH_FORGOT_PASSWORD,
         errorMessageForgotPassword:
           "This email is not register, please verify the email you provide or go back the sign up page "
       });
-    } else if (response.data.error === "Recovery email sent") {
+    } else if (response.data === "Recovery email sent") {
       dispatch({
         type: AUTH_USER,
         validatedForgotPassword: "Recovery email sent"
+      });
+    } else if (response.data === "You must provide an email") {
+      dispatch({
+        type: AUTH_FORGOT_PASSWORD,
+        errorMessageForgotPassword: "You must provide an email"
+      });
+    } else if (response.data === "The email you provide is not valid") {
+      dispatch({
+        type: AUTH_USER,
+        validatedForgotPassword: "The email you provide is not valid"
       });
     }
   } catch (error) {
