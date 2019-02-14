@@ -37,7 +37,7 @@ class Signup extends Component {
   }
 
   onSubmitSignUp = formProps => {
-    console.log("signup");
+    console.log(formProps);
 
     this.props.signup(formProps, () => {
       this.props.history.push("/feature");
@@ -72,9 +72,6 @@ class Signup extends Component {
               type={type}
               {...input}
               placeholder={placeholder}
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="off"
             />
           </div>
         </div>
@@ -92,29 +89,19 @@ class Signup extends Component {
             <Field
               name="firstName"
               component={inputUiKitEmail("icon: user", "Firstname", "text")}
-              autoCorrect="off"
-              spellCheck="off"
-              autoComplete="off"
             />
             <Field
               name="lastName"
               component={inputUiKitEmail("icon: user", "Lastname", "text")}
-              autoCorrect="off"
-              spellCheck="off"
-              autoComplete="off"
             />
             <Field
               name="email"
               component={inputUiKitEmail("icon: mail", "Email", "email")}
-              autoCorrect="off"
-              spellCheck="off"
               autoComplete="Email"
             />
             <Field
               name="password"
               component={inputUiKitEmail("icon: lock", "Password", "password")}
-              autoComplete="off"
-              
             />
             <Field
               name="confirm_password"
@@ -123,7 +110,6 @@ class Signup extends Component {
                 "Confirm Password",
                 "password"
               )}
-              autoComplete="off"
             />
 
             <div className="uk-margin">

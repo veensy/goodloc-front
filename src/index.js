@@ -12,15 +12,15 @@ import reducers from "./reducers";
 import Feature from "./components/Feature";
 import Signout from "./components/auth/Signout";
 import Signin from "./components/auth/Signin";
+import ForgotPassword from "./components/auth/ForgotPassword";
 
-import {INITIAL_STATE} from './reducers/auth'
+import { INITIAL_STATE } from "./reducers/auth";
 
 
 const store = createStore(
-
   reducers,
   {
-    auth: { ...INITIAL_STATE, authenticated: localStorage.getItem("token") },
+    auth: { ...INITIAL_STATE, authenticated: localStorage.getItem("token") }
   },
   applyMiddleware(reduxThunk)
 );
@@ -34,9 +34,9 @@ ReactDOM.render(
         <Route path="/feature" component={Feature} />
         <Route path="/signout" component={Signout} />
         <Route path="/signin" component={Signin} />
+        <Route path="/forgotPassword" component={ForgotPassword} />
       </App>
     </BrowserRouter>
   </Provider>,
   document.querySelector("#root")
 );
-

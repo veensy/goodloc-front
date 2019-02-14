@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import * as actions from "../../actions";
 import Modal from "react-modal";
+import { Link } from 'react-router-dom'
 
 const customStyles = {
   content: {
@@ -23,6 +24,13 @@ class Signin extends Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
+
+  componentDidMount() {
+  
+    
+    console.log(this.refs.email)
+  }
+
   componentWillMount() {
     Modal.setAppElement("body");
   }
@@ -34,6 +42,8 @@ class Signin extends Component {
     this.setState({ modalIsOpen: false });
   }
   onSubmitSignIn = formProps => {
+    console.log(formProps, "test1");
+
     this.props.signin(formProps, () => {
       this.props.history.push("/feature");
     });
@@ -45,7 +55,6 @@ class Signin extends Component {
       </div>
     );
   };
-
   render() {
     const { handleSubmit } = this.props;
     const inputUiKitEmail = (icon, placeholder, type) => ({ input }) => {
@@ -58,7 +67,7 @@ class Signin extends Component {
               type={type}
               {...input}
               placeholder={placeholder}
-              autoComplete="off"
+              
             />
           </div>
         </div>
@@ -75,14 +84,15 @@ class Signin extends Component {
             <Field
               name="email"
               component={inputUiKitEmail("icon: mail", "Email", "email")}
-              autoCorrect="off"
-              spellCheck="off"
-              autoComplete="off"
+              ref="email"  withRef
+ 
             />
             <Field
               name="password"
               component={inputUiKitEmail("icon: lock", "Password", "password")}
-              autoComplete="off"
+              type="password"
+              ref="password" withRef
+  
             />
             <div className="uk-margin">
               <div className="uk-inline">
@@ -105,7 +115,11 @@ class Signin extends Component {
                   {this.renderErrorMessage()}
                 </Modal>
               </div>
+              
             </div>
+            <Link to="/forgotPassword" style={{ textDecoration: "none" }}>
+            <span className="color-text">forgot password ?</span>
+          </Link>
           </div>
 
           <div />
@@ -115,7 +129,6 @@ class Signin extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log(state);
   return {
     errorMessage: state.auth.errorMessageSignIn,
     validate: state.auth.validatedSignIn
