@@ -34,8 +34,8 @@ ReactDOM.render(
         <Route path="/feature" component={Feature} />
         <Route path="/signout" component={Signout} />
         <Route path="/signin" component={Signin} />
-        <Route path="/forgotPassword" component={ForgotPassword} />
-        <Route path="/reset" component={ResetPassword} />
+        <Route path="/forgotpassword" component={ForgotPassword} />
+        <Route path="/resetpassword" component={ResetPassword} />
       </App>
     </BrowserRouter>
   </Provider>,

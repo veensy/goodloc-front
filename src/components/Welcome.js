@@ -16,7 +16,7 @@ export default function Welcome() {
       </p>
 
       
-        <div className="uk-flex uk-flex-center">
+        <div className="uk-flex uk-flex-center uk-flex-wrap">
           <div className="uk-card uk-card-default uk-card-body">
             <Signup />
           </div>

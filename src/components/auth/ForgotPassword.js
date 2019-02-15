@@ -47,7 +47,7 @@ class ForgotPassword extends Component {
   };
   resetPage = () => {
     if (this.props.validate && this.state.modalIsOpen === false) {
-      this.props.history.push("/reset");
+      this.props.history.push("/resetpassword");
     }
   };
   render() {

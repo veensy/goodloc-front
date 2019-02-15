@@ -117,7 +117,7 @@ class Signin extends Component {
               </div>
               
             </div>
-            <Link to="/forgotPassword" style={{ textDecoration: "none" }}>
+            <Link to="/forgotpassword" style={{ textDecoration: "none" }}>
             <span className="color-text">forgot password ?</span>
           </Link>
           </div>
