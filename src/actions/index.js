@@ -3,17 +3,50 @@ import {
   AUTH_USER,
   AUTH_ERROR_SIGNIN,
   AUTH_ERROR_SIGNUP,
-  AUTH_FORGOT_PASSWORD
+  AUTH_FORGOT_PASSWORD,
+  AUTH_RESET_PASSWORD
 } from "./types";
 
 const l = "http://localhost:3090/";
+export const resetPassword = (newToken, callback) => async dispatch => {
+  try {
+    console.log("test", newToken);
+    await axios
+      .get(`${l}resetpassword`, { params: newToken  })
+      .then(response => {
+        console.log("response data", response);
+        if (response.data === "Password reset link is ok") {
+          console.log(response.data);
 
+          dispatch({
+            type: AUTH_USER,
+            email: response.data.email,
+            validatedResetPassword: "Password reset link is ok",
+            update: false,
+            isLoading: false,
+            errorMessageResetPassword: false
+          });
+        } else {
+          dispatch({
+            type: AUTH_RESET_PASSWORD,
+            update: false,
+            isLoading: false,
+            errorMessageResetPassword: true
+          });
+        }
+      });
+  } catch (error) {
+    console.log("if error params :", newToken, "error :", error);
+  }
+};
 export const forgotPassword = (formProps, callback) => async dispatch => {
   try {
-    console.log(formProps);
+    console.log("first log", formProps);
+    console.log("-----------------------------------");
 
     const response = await axios.post(`${l}forgotpassword`, formProps);
-    console.log(response);
+    console.log("secon log", response);
+    console.log("-----------------------------------");
 
     if (response.data === "Email not in db") {
       dispatch({
@@ -39,7 +72,8 @@ export const forgotPassword = (formProps, callback) => async dispatch => {
     }
   } catch (error) {
     if (!formProps.email) {
-      console.log(formProps);
+      console.log("third log", formProps);
+      console.log("-----------------------------------");
 
       dispatch({
         type: AUTH_FORGOT_PASSWORD,

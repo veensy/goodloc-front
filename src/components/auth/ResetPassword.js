@@ -25,6 +25,11 @@ export class ResetPassword extends Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
+  async componentDidMount() {
+    const newToken = this.props.match.params.newToken;
+    //console.log(newToken);
+    this.props.resetPassword({ newToken: newToken });
+  }
 
   componentWillMount() {
     Modal.setAppElement("body");
@@ -52,6 +57,9 @@ export class ResetPassword extends Component {
   };
 
   render() {
+    console.log(this.props.validate);
+    console.log(this.props.errorMessage);
+
     const { handleSubmit } = this.props;
     const inputUiKitEmail = (icon, placeholder, type) => ({ input }) => {
       return (
@@ -68,7 +76,7 @@ export class ResetPassword extends Component {
         </div>
       );
     };
-    if ("err") {
+    if (this.props.error) {
       return (
         <div>
           <div className="uk-flex uk-flex-center uk-position-center">
@@ -93,7 +101,7 @@ export class ResetPassword extends Component {
           </div>
         </div>
       );
-    } else if ("isLoading") {
+    } else if (this.props.isLoading) {
       return <div uk-spinner />;
     } else {
       return (
@@ -136,6 +144,8 @@ export class ResetPassword extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state);
+
   return {
     errorMessage: state.auth.errorMessageResetPassword,
     validate: state.auth.validatedResetPassword
