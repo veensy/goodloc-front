@@ -3,57 +3,24 @@ import { reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import * as actions from "../../actions";
-import Modal from "react-modal";
-import { Link } from 'react-router-dom'
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
+import { Link } from "react-router-dom";
 
 class Signin extends Component {
-  constructor() {
-    super();
-    this.state = { modalIsOpen: false };
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-  }
-
-  componentDidMount() {
-  
-    
-    console.log(this.refs.email)
-  }
-
-  componentWillMount() {
-    Modal.setAppElement("body");
-  }
-  openModal() {
-    this.setState({ modalIsOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalIsOpen: false });
-  }
   onSubmitSignIn = formProps => {
-    console.log(formProps, "test1");
-
     this.props.signin(formProps, () => {
       this.props.history.push("/feature");
     });
   };
-  renderErrorMessage = () => {
-    return (
-      <div>
-        {this.props.validate ? this.props.validate : this.props.errorMessage}
-      </div>
-    );
+  notif = () => {
+    if (!this.props.validate && !this.props.errorMessage) {
+      return <span data-uk-spinner="" />;
+    } else {
+      return (
+        <div>
+          {this.props.validate ? this.props.validate : this.props.errorMessage}
+        </div>
+      );
+    }
   };
   render() {
     const { handleSubmit } = this.props;
@@ -67,7 +34,6 @@ class Signin extends Component {
               type={type}
               {...input}
               placeholder={placeholder}
-              
             />
           </div>
         </div>
@@ -84,45 +50,30 @@ class Signin extends Component {
             <Field
               name="email"
               component={inputUiKitEmail("icon: mail", "Email", "email")}
-              ref="email"  withRef
- 
+              ref="email"
+              withRef
             />
             <Field
               name="password"
               component={inputUiKitEmail("icon: lock", "Password", "password")}
               type="password"
-              ref="password" withRef
-  
+              ref="password"
+              withRef
             />
             <div className="uk-margin">
               <div className="uk-inline">
-                <button
-                  onClick={this.openModal}
-                  className="uk-button uk-button-default color-button"
-                >
+                <button className="uk-button uk-button-default color-button">
                   Log In
                 </button>
-                <Modal
-                  isOpen={this.state.modalIsOpen}
-                  onRequestClose={this.closeModal}
-                  style={customStyles}
-                  contentLabel=""
-                >
-                  <button className="close-button" onClick={this.closeModal}>
-                    <b>X</b>
-                  </button>
-
-                  {this.renderErrorMessage()}
-                </Modal>
               </div>
-              
             </div>
             <Link to="/forgotpassword" style={{ textDecoration: "none" }}>
-            <span className="color-text">forgot password ?</span>
-          </Link>
+              <span className="color-text">forgot password ?</span>
+            </Link>
           </div>
-
-          <div />
+          <div className="uk-alert-primary uk-text-center" uk-alert>
+            <p>{this.notif()}</p>
+          </div>
         </form>
       </div>
     );

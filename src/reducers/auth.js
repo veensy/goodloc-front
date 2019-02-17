@@ -3,7 +3,8 @@ import {
   AUTH_ERROR_SIGNIN,
   AUTH_ERROR_SIGNUP,
   AUTH_FORGOT_PASSWORD,
-  AUTH_RESET_PASSWORD
+  AUTH_RESET_PASSWORD,
+  AUTH_UPDATE_PASSWORD
 } from "../actions/types";
 
 export const INITIAL_STATE = {
@@ -12,10 +13,12 @@ export const INITIAL_STATE = {
   errorMessageSignUp: [],
   errorMessageForgotPassword: "",
   errorMessageResetPassword: false,
+  errorMessageUpdatePassword: "",
   validatedSignIn: "",
   validatedSignUp: "",
   validatedForgotPassword: "",
   validatedResetPassword: "",
+  validatedUpdatePassword: "",
   email: "",
   isLoading: true,
   update: false
@@ -31,6 +34,7 @@ export default (state = INITIAL_STATE, action) => {
         validatedSignIn: action.validatedSignIn,
         validatedForgotPassword: action.validatedForgotPassword,
         validatedResetPassword: action.validatedResetPassword,
+        validatedUpdatePassword: action.validatedUpdatePassword,
         email: action.email,
         isLoading: action.isLoading,
         update: action.update
@@ -48,6 +52,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         errorMessageResetPassword: action.errorMessageResetPassword
+      };
+    case AUTH_UPDATE_PASSWORD:
+      return {
+        ...state,
+        errorMessageUpdatePassword: action.errorMessageUpdatePassword
       };
     default:
       return state;

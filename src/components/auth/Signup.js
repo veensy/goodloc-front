@@ -3,61 +3,34 @@ import { reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import * as actions from "../../actions";
-import Modal from "react-modal";
 
 import "../Styles/Sign.css";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
-
 class Signup extends Component {
-  constructor() {
-    super();
-    this.state = { modalIsOpen: false, value: {} };
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-  }
-  componentWillMount() {
-    Modal.setAppElement("body");
-  }
-  openModal() {
-    this.setState({ modalIsOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalIsOpen: false });
-  }
+  notif = () => {
+    if (!this.props.validate && !this.props.errorMessage) {
+      return <span data-uk-spinner="" />;
+    } else {
+      return (
+        <div>
+          {this.props.validate ? (
+            this.props.validate
+          ) : (
+            <ul>
+              {this.props.errorMessage.map(message => (
+                <li key={message}>{message}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      );
+    }
+  };
 
   onSubmitSignUp = formProps => {
-    console.log(formProps);
-
     this.props.signup(formProps, () => {
       this.props.history.push("/feature");
     });
-  };
-
-  renderErrorMessage = () => {
-    return (
-      <div>
-        {this.props.validate ? (
-          this.props.validate
-        ) : (
-          <ul>
-            {this.props.errorMessage.map(message => (
-              <li key={message}>{message}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-    );
   };
 
   render() {
@@ -114,29 +87,15 @@ class Signup extends Component {
 
             <div className="uk-margin">
               <div className="uk-inline">
-                <button
-                  className="uk-button uk-button-default color-button"
-                  onClick={this.openModal}
-                >
+                <button className="uk-button uk-button-default color-button">
                   Join Us
                 </button>
-                <Modal
-                  isOpen={this.state.modalIsOpen}
-                  onRequestClose={this.closeModal}
-                  style={customStyles}
-                  contentLabel=""
-                >
-                  <button className="close-button" onClick={this.closeModal}>
-                    <b>X</b>
-                  </button>
-
-                  {this.renderErrorMessage()}
-                </Modal>
               </div>
             </div>
           </div>
-
-          <div />
+          <div className="uk-alert-primary uk-text-center" uk-alert>
+            <p>{this.notif()}</p>
+          </div>
         </form>
       </div>
     );

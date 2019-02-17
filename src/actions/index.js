@@ -4,20 +4,54 @@ import {
   AUTH_ERROR_SIGNIN,
   AUTH_ERROR_SIGNUP,
   AUTH_FORGOT_PASSWORD,
-  AUTH_RESET_PASSWORD
+  AUTH_RESET_PASSWORD,
+  AUTH_UPDATE_PASSWORD
 } from "./types";
 
 const l = "http://localhost:3090/";
-export const resetPassword = (newToken, callback) => async dispatch => {
-  try {
-    console.log("test", newToken);
-    await axios
-      .get(`${l}resetpassword`, { params: newToken  })
-      .then(response => {
-        console.log("response data", response);
-        if (response.data === "Password reset link is ok") {
-          console.log(response.data);
+export const updatePassword = (formProps, callback) => async dispatch => {
+  console.log("-----------------------------------");
+  console.log(formProps);
+  console.log("-----------------------------------");
 
+  try {
+    await axios.put(`${l}updatepassword`, formProps).then(response => {
+      console.log("-----------------------------------");
+      console.log(response);
+      console.log("-----------------------------------");
+      if (response.data.message === "Password updated") {
+        dispatch({
+          type: AUTH_USER,
+          validatedUpdatePassword: "Password updated"
+        });
+        localStorage.setItem("token", response.data.token);
+        callback();
+      } else if (response.data === "Email not in database") {
+        dispatch({
+          type: AUTH_UPDATE_PASSWORD,
+          validatedResetPassword:
+            "Verify your email address, it must be the same you use to get the reset link"
+        });
+      }
+    });
+  } catch (error) {
+    if (!formProps.email || !formProps.password) {
+      console.log("-----------------------------------");
+      console.log("third log", formProps);
+      console.log("-----------------------------------");
+      dispatch({
+        type: AUTH_UPDATE_PASSWORD,
+        validatedResetPassword: "You have to fill all the fields"
+      });
+    }
+  }
+};
+export const resetPassword = newToken => async dispatch => {
+  try {
+    await axios
+      .get(`${l}resetpassword`, { params: newToken })
+      .then(response => {
+        if (response.data === "Password reset link is ok") {
           dispatch({
             type: AUTH_USER,
             email: response.data.email,
@@ -35,18 +69,11 @@ export const resetPassword = (newToken, callback) => async dispatch => {
           });
         }
       });
-  } catch (error) {
-    console.log("if error params :", newToken, "error :", error);
-  }
+  } catch (error) {}
 };
-export const forgotPassword = (formProps, callback) => async dispatch => {
+export const forgotPassword = formProps => async dispatch => {
   try {
-    console.log("first log", formProps);
-    console.log("-----------------------------------");
-
     const response = await axios.post(`${l}forgotpassword`, formProps);
-    console.log("secon log", response);
-    console.log("-----------------------------------");
 
     if (response.data === "Email not in db") {
       dispatch({
@@ -72,9 +99,6 @@ export const forgotPassword = (formProps, callback) => async dispatch => {
     }
   } catch (error) {
     if (!formProps.email) {
-      console.log("third log", formProps);
-      console.log("-----------------------------------");
-
       dispatch({
         type: AUTH_FORGOT_PASSWORD,
         errorMessageForgotPassword: "You must provide an email"
@@ -145,7 +169,18 @@ export const signout = () => {
 
 export const signin = (formProps, callback) => async dispatch => {
   try {
+    console.log("---------------------");
+    console.log(formProps);
+
+    console.log("---------------------");
+
     const response = await axios.post(`${l}signin`, formProps);
+    console.log("---------------------");
+
+    console.log("response",response);
+    console.log("---------------------");
+
+    
     dispatch({
       type: AUTH_USER,
       status: response.data.token,
@@ -154,6 +189,8 @@ export const signin = (formProps, callback) => async dispatch => {
     localStorage.setItem("token", response.data.token);
     callback();
   } catch (e) {
+    console.log(e);
+    
     dispatch({
       type: AUTH_ERROR_SIGNIN,
       errorMessageSignIn: "Invalid login credentials"

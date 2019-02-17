@@ -3,51 +3,33 @@ import { reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import * as actions from "../../actions";
-import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import "../Styles/welcome.css";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
 class ForgotPassword extends Component {
-  constructor() {
-    super();
-    this.state = { modalIsOpen: false };
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-  }
-
-  componentWillMount() {
-    Modal.setAppElement("body");
-  }
-  openModal() {
-    this.setState({ modalIsOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalIsOpen: false });
-  }
   onSubmitForgotPassword = formProps => {
-    this.props.forgotPassword(formProps, () => {});
+    this.props.forgotPassword(formProps);
   };
-  renderErrorMessage = () => {
-    return (
-      <div>
-        {this.props.validate ? this.props.validate : this.props.errorMessage}
-      </div>
-    );
+
+  notif = () => {
+    if (!this.props.validate && !this.props.errorMessage) {
+      return <span data-uk-spinner="" />;
+    } else if (this.props.errorMessage) {
+      return <div>{this.props.errorMessage}</div>;
+    } else
+      return (
+        <div>
+          <span data-uk-spinner="" />
+          <br />
+          {this.props.validate}
+          <br />
+          You will be redirected to the login page
+        </div>
+      );
   };
   resetPage = () => {
-    if (this.props.validate && this.state.modalIsOpen === false) {
-      this.props.history.push("/");
+    if (this.props.validate) {
+      setTimeout(() => this.props.history.push("/"), 8000);
     }
   };
   render() {
@@ -87,27 +69,9 @@ class ForgotPassword extends Component {
 
                 <div className="uk-margin">
                   <div className="uk-inline">
-                    <button
-                      onClick={this.openModal}
-                      className="uk-button uk-button-default color-button"
-                    >
+                    <button className="uk-button uk-button-default color-button">
                       Send Password Reset Email
                     </button>
-                    <Modal
-                      isOpen={this.state.modalIsOpen}
-                      onRequestClose={this.closeModal}
-                      style={customStyles}
-                      contentLabel=""
-                    >
-                      <button
-                        className="close-button"
-                        onClick={this.closeModal}
-                      >
-                        <b>X</b>
-                      </button>
-
-                      {this.renderErrorMessage()}
-                    </Modal>
                   </div>
                 </div>
                 <p>
@@ -118,7 +82,9 @@ class ForgotPassword extends Component {
                 </p>
               </div>
 
-              <div />
+              <div className="uk-alert-primary uk-text-center" uk-alert>
+                <p>{this.notif()}</p>
+              </div>
             </form>
           </div>
         </div>
