@@ -5,10 +5,54 @@ import {
   AUTH_ERROR_SIGNUP,
   AUTH_FORGOT_PASSWORD,
   AUTH_RESET_PASSWORD,
-  AUTH_UPDATE_PASSWORD
+  AUTH_UPDATE_PASSWORD,
+  AUTH_CONFIRM_EMAIL
 } from "./types";
 
 const l = "http://localhost:3090/";
+
+// CONFIM PASSWORD
+export const confirmEmail = (
+  formProps,
+  TokenForConfirmEmail
+) => async dispatch => {
+  console.log(formProps, "1");
+
+  try {
+    console.log("2", formProps);
+    let form = formProps.email;
+
+    await axios
+      .post(`${l}confirmation`, {
+        needForConfirmation: { email: form, TokenForConfirmEmail }
+      })
+      .then(response => {
+        console.log("3", response);
+        dispatch({
+          type: AUTH_CONFIRM_EMAIL,
+          errorMessageConfirmEmail: response.data.errorMessage
+        });
+      });
+
+    
+  } catch (err) {
+    const validation = (form = formProps) => {
+      let message = [];
+      if (!form.email) {
+        message = [...message, "You must provide an email"];
+      }
+      if (!TokenForConfirmEmail.TokenForConfirmEmail) {
+        message = [...message, "This token is invalid !"];
+      }
+      dispatch({
+        type: AUTH_CONFIRM_EMAIL,
+        errorMessageConfirmEmail: message
+      });
+    };
+    validation();
+  }
+};
+// UPDATE PASSWORD
 export const updatePassword = (formProps, callback) => async dispatch => {
   console.log("-----------------------------------");
   console.log(formProps);
@@ -46,6 +90,8 @@ export const updatePassword = (formProps, callback) => async dispatch => {
     }
   }
 };
+
+//RESET PASSWORD
 export const resetPassword = newToken => async dispatch => {
   try {
     await axios
@@ -71,6 +117,7 @@ export const resetPassword = newToken => async dispatch => {
       });
   } catch (error) {}
 };
+//FORGOT PASSWORD
 export const forgotPassword = formProps => async dispatch => {
   try {
     const response = await axios.post(`${l}forgotpassword`, formProps);
@@ -107,6 +154,7 @@ export const forgotPassword = formProps => async dispatch => {
   }
 };
 
+// SIGN UP
 export const signup = (formProps, callback) => async dispatch => {
   try {
     const response = await axios.post(`${l}signup`, formProps);
@@ -159,6 +207,8 @@ export const signup = (formProps, callback) => async dispatch => {
     validation();
   }
 };
+
+// SIGN OUT
 export const signout = () => {
   localStorage.removeItem("token");
   return {
@@ -167,6 +217,7 @@ export const signout = () => {
   };
 };
 
+//SIGN IN
 export const signin = (formProps, callback) => async dispatch => {
   try {
     console.log("---------------------");
@@ -177,10 +228,9 @@ export const signin = (formProps, callback) => async dispatch => {
     const response = await axios.post(`${l}signin`, formProps);
     console.log("---------------------");
 
-    console.log("response",response);
+    console.log("response", response);
     console.log("---------------------");
 
-    
     dispatch({
       type: AUTH_USER,
       status: response.data.token,
@@ -190,7 +240,7 @@ export const signin = (formProps, callback) => async dispatch => {
     callback();
   } catch (e) {
     console.log(e);
-    
+
     dispatch({
       type: AUTH_ERROR_SIGNIN,
       errorMessageSignIn: "Invalid login credentials"

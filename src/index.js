@@ -13,9 +13,11 @@ import Feature from "./components/Feature";
 import Signout from "./components/auth/Signout";
 import Signin from "./components/auth/Signin";
 import ForgotPassword from "./components/auth/ForgotPassword";
+import ConfirmEmail from "./components/auth/ConfirmEmail";
+import ResetPassword from "./components/auth/ResetPassword";
 
 import { INITIAL_STATE } from "./reducers/auth";
-import ResetPassword from "./components/auth/ResetPassword";
+
 
 const store = createStore(
   reducers,
@@ -36,6 +38,10 @@ ReactDOM.render(
         <Route path="/signin" component={Signin} />
         <Route path="/forgotpassword" component={ForgotPassword} />
         <Route path="/resetpassword/:newToken" component={ResetPassword} />
+        <Route
+          path="/confirmation/:TokenForConfirmEmail"
+          component={ConfirmEmail}
+        />
       </App>
     </BrowserRouter>
   </Provider>,

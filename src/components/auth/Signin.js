@@ -72,7 +72,7 @@ class Signin extends Component {
             </Link>
           </div>
           <div className="uk-alert-primary uk-text-center" uk-alert>
-            <p>{this.notif()}</p>
+            {this.notif()}
           </div>
         </form>
       </div>
