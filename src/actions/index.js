@@ -220,17 +220,24 @@ export const signout = () => {
 //SIGN IN
 export const signin = (formProps, callback) => async dispatch => {
   try {
-    console.log("---------------------");
-    console.log(formProps);
-
-    console.log("---------------------");
-
     const response = await axios.post(`${l}signin`, formProps);
-    console.log("---------------------");
+    console.log(response)
+    if(response.data.errorMessage === "Your account has not been verified."){
+      console.log("plo")
+      dispatch({
+        type:AUTH_ERROR_SIGNIN,
+        errorMessageSignIn:"Your account has not been verified."
+      })
 
-    console.log("response", response);
-    console.log("---------------------");
-
+    }
+    if(response.data.errorMessage==='Wrong password'){
+      dispatch({
+        type:AUTH_ERROR_SIGNIN,
+        errorMessageSignIn:"'Wrong password"
+      })
+    }
+    
+    if(response.data.validate ==="Valid login credentials"){
     dispatch({
       type: AUTH_USER,
       status: response.data.token,
@@ -238,12 +245,25 @@ export const signin = (formProps, callback) => async dispatch => {
     });
     localStorage.setItem("token", response.data.token);
     callback();
+  }
   } catch (e) {
-    console.log(e);
 
+    const errorMessage = (form = formProps)=>{
+    let message = [];
+    if(!form.email){
+      message = [...message,"You must provide an email."]
+    }
+    if(!form.password){
+      message = [...message,"You must provide a password."]   
+    }
     dispatch({
-      type: AUTH_ERROR_SIGNIN,
-      errorMessageSignIn: "Invalid login credentials"
-    });
+      type:AUTH_ERROR_SIGNIN,
+      errorMessageSignIn:message
+    })
+    console.log(message)
+  }
+ 
+  errorMessage()
+    
   }
 };

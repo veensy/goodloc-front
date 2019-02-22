@@ -6,9 +6,10 @@ import * as actions from "../../actions";
 import { Link } from "react-router-dom";
 
 class Signin extends Component {
-  onSubmitSignIn = formProps => {
+  onSubmitSignIn = (formProps) => {
     this.props.signin(formProps, () => {
-      this.props.history.push("/feature");
+      //e.preventDefault()
+      //this.props.history.push("/feature");
     });
   };
   notif = () => {
@@ -17,7 +18,15 @@ class Signin extends Component {
     } else {
       return (
         <div>
-          {this.props.validate ? this.props.validate : this.props.errorMessage}
+          {this.props.validate ? (
+            this.props.validate
+          ) : (
+            <ul>
+              {this.props.errorMessage.map(message => (
+                <li key={message}>{message}</li>
+              ))}
+            </ul>
+          )}
         </div>
       );
     }
@@ -80,6 +89,7 @@ class Signin extends Component {
   }
 }
 const mapStateToProps = state => {
+
   return {
     errorMessage: state.auth.errorMessageSignIn,
     validate: state.auth.validatedSignIn
