@@ -5,7 +5,8 @@ import {
   AUTH_FORGOT_PASSWORD,
   AUTH_RESET_PASSWORD,
   AUTH_UPDATE_PASSWORD,
-  AUTH_CONFIRM_EMAIL
+  AUTH_CONFIRM_EMAIL,
+  AUTH_RESEND_EMAIL_LINK
 } from "../actions/types";
 
 export const INITIAL_STATE = {
@@ -39,6 +40,7 @@ export default (state = INITIAL_STATE, action) => {
         validatedForgotPassword: action.validatedForgotPassword,
         validatedResetPassword: action.validatedResetPassword,
         validatedUpdatePassword: action.validatedUpdatePassword,
+        validatedResendEmailLink: action.validatedResendEmailLink,
         email: action.email,
         isLoading: action.isLoading,
         update: action.update
@@ -66,6 +68,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         errorMessageUpdatePassword: action.errorMessageUpdatePassword
+      };
+    case AUTH_RESEND_EMAIL_LINK:
+      return {
+        ...state,
+        errorMessageResendEmailLink: action.errorMessageResendEmailLink
       };
     default:
       return state;

@@ -6,11 +6,24 @@ import * as actions from "../../actions";
 import { Link } from "react-router-dom";
 
 class Signin extends Component {
-  onSubmitSignIn = (formProps) => {
-    this.props.signin(formProps, () => {
-      //e.preventDefault()
-      //this.props.history.push("/feature");
-    });
+  onSubmitSignIn = formProps => {
+    this.props.signin(formProps)
+  };
+
+  resendNewEmailVerificationLink = () => {
+    let email = this.props.email
+    this.props.resendEmailLink(email)
+  };
+  renderNewLink = () => {
+    if (this.props.validate[0] === "Your account has not been verified.") {
+      return (
+        <div>
+          If you already register we can resend to you a{" "}
+          <span className ="resendEmailVerifLink"onClick={this.resendNewEmailVerificationLink}>new link</span>,
+          and you should probalbly check in your spam.
+        </div>
+      );
+    }
   };
   notif = () => {
     if (!this.props.validate && !this.props.errorMessage) {
@@ -80,8 +93,9 @@ class Signin extends Component {
               <span className="color-text">forgot password ?</span>
             </Link>
           </div>
-          <div className="uk-alert-primary uk-text-center" uk-alert>
+          <div className="uk-alert-primary uk-text-center messageBox" uk-alert>
             {this.notif()}
+            {this.renderNewLink()}
           </div>
         </form>
       </div>
@@ -89,10 +103,10 @@ class Signin extends Component {
   }
 }
 const mapStateToProps = state => {
-
   return {
     errorMessage: state.auth.errorMessageSignIn,
-    validate: state.auth.validatedSignIn
+    validate: state.auth.validatedSignIn,
+    email: state.auth.email
   };
 };
 

@@ -5,3 +5,4 @@ export const AUTH_FORGOT_PASSWORD = "auth_forgot_password";
 export const AUTH_RESET_PASSWORD = "auth_reset_password";
 export const AUTH_UPDATE_PASSWORD = "auth_update_password";
 export const AUTH_CONFIRM_EMAIL = "auth_confirm_email";
+export const AUTH_RESEND_EMAIL_LINK = "auth_resend_email_link";

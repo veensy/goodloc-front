@@ -6,7 +6,8 @@ import {
   AUTH_FORGOT_PASSWORD,
   AUTH_RESET_PASSWORD,
   AUTH_UPDATE_PASSWORD,
-  AUTH_CONFIRM_EMAIL
+  AUTH_CONFIRM_EMAIL,
+  AUTH_RESEND_EMAIL_LINK
 } from "./types";
 
 const l = "http://localhost:3090/";
@@ -33,8 +34,6 @@ export const confirmEmail = (
           errorMessageConfirmEmail: response.data.errorMessage
         });
       });
-
-    
   } catch (err) {
     const validation = (form = formProps) => {
       let message = [];
@@ -221,49 +220,96 @@ export const signout = () => {
 export const signin = (formProps, callback) => async dispatch => {
   try {
     const response = await axios.post(`${l}signin`, formProps);
-    console.log(response)
-    if(response.data.errorMessage === "Your account has not been verified."){
-      console.log("plo")
-      dispatch({
-        type:AUTH_ERROR_SIGNIN,
-        errorMessageSignIn:"Your account has not been verified."
-      })
+    console.log(response);
 
-    }
-    if(response.data.errorMessage==='Wrong password'){
+    const responseMessage = (res = response) => {
+      let message = [];
+      let status = "";
+      let email = {};
+      if (
+        response.data.errorMessage === "Your account has not been verified."
+      ) {
+        message = [...message, "Your account has not been verified."];
+        email = response.data.email;
+      }
+      if (response.data.errorMessage === "Wrong password") {
+        message = [...message, "Wrong password"];
+      }
+
+      if (response.data.validate === "Valid login credentials") {
+        message = [...message, "Valid login credential"];
+        status = response.data.token;
+
+        localStorage.setItem("token", response.data.token);
+        callback();
+      }
       dispatch({
-        type:AUTH_ERROR_SIGNIN,
-        errorMessageSignIn:"'Wrong password"
-      })
-    }
-    
-    if(response.data.validate ==="Valid login credentials"){
-    dispatch({
-      type: AUTH_USER,
-      status: response.data.token,
-      validatedSignIn: "Valid login credentials"
-    });
-    localStorage.setItem("token", response.data.token);
-    callback();
-  }
+        type: AUTH_USER,
+        status: status,
+        validatedSignIn: message,
+        email: email
+      });
+    };
+    responseMessage();
   } catch (e) {
+    const errorMessage = (form = formProps) => {
+      let message = [];
+      if (!form.email) {
+        message = [...message, "You must provide an email."];
+      }
+      if (!form.password) {
+        message = [...message, "You must provide a password."];
+      }
+      dispatch({
+        type: AUTH_ERROR_SIGNIN,
+        errorMessageSignIn: message
+      });
+      console.log(message);
+    };
 
-    const errorMessage = (form = formProps)=>{
-    let message = [];
-    if(!form.email){
-      message = [...message,"You must provide an email."]
-    }
-    if(!form.password){
-      message = [...message,"You must provide a password."]   
-    }
-    dispatch({
-      type:AUTH_ERROR_SIGNIN,
-      errorMessageSignIn:message
-    })
-    console.log(message)
+    errorMessage();
   }
- 
-  errorMessage()
-    
+};
+
+export const resendEmailLink = email => async dispatch => {
+  try {
+    let mail = { useremail: email };
+
+    await axios.post(`${l}resendemaillink`, mail).then(response => {
+      const sendMessage = () => {
+        let message = [];
+        if (
+          response.data.errorMessage ===
+          "We were unable to find a user with that email."
+        ) {
+          message = [
+            ...message,
+            "We were unable to find a user with that email."
+          ];
+        }
+        dispatch({
+          type: AUTH_RESEND_EMAIL_LINK,
+          errorMessageResendEmailLink: message
+        });
+        if (response.data.errorMessage === "Recovery email sent to " + email) {
+          console.log("ok");
+          
+          dispatch({
+            type: AUTH_USER,
+            validatedResendEmailLink: "Recovery email sent to " + email
+          });
+        }
+      };
+      sendMessage();
+    });
+  } catch (err) {
+    console.log("err");
+
+    if (!email) {
+      dispatch({
+        type: AUTH_RESEND_EMAIL_LINK,
+        errorMessageResendEmailLink: "You must provide an email"
+      });
+    }
   }
 };
